@@ -2,37 +2,54 @@
 <html>
 
 <head>
+ <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bulma.css') }}">
  
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
 </head>
 
 <body>
      <section class="hero is-primary is-medium">
-                        <div>
-                            <a href="{{ url_for('main.index') }}">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('main.index') }}" class="navbar-item">
                                 Home
                             </a>
-                            <a href="{{ url_for('main.profile') }}">
+                            <a href="{{ url_for('main.profile') }}" class="navbar-item">
                                 Twój profil
                             </a>
-                            <a href="{{ url_for('authorized.login') }}">
+                            <a href="{{ url_for('authorized.login') }}" class="navbar-item">
                                 Login
                             </a>
-                            <a href="{{ url_for('authorized.register') }}">
+                            <a href="{{ url_for('authorized.register') }}" class="navbar-item">
                                 Rejestracja
                             </a>
-                            <a href="{{ url_for('authorized.logout') }}">
+                            <a href="{{ url_for('authorized.logout') }}" class="navbar-item">
                                 Wyloguj
                             </a>
-                        </div>     
-            <div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="hero-body">
+            <div class="container has-text-centered">
                {% block content %}
                {% endblock %}
             </div>
+        </div>
     </section>
 </body>
-<footer>
+<footer class="hero-foot">
   <div>
-      <p>B. Kochanowski 2020</p>
+      <p>B. Kochanowski 2020 </p>
+	  <a href="https://bulma.io">
+        <img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">
+        </a>
   </div>
 </footer>
 </html>

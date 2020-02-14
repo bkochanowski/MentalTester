@@ -1,27 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div>
-    <h3>Rejstracja</h3>
-    <div>
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Rejstracja</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}. Idź do <a href="{{ url_for('authorized.login') }}">Strony Logowania</a>.
+        </div>
         {% endif %}
         {% endwith %}
         <form method="POST" action="/register">
-            <div>
-                <input type="email" name="email" placeholder="Email" autofocus="">
-            </div>
-    </div>
-
-            <div>
-                <input type="text" name="name" placeholder="Nazwa" autofocus="">         
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
+                </div>
             </div>
 
             <div class="field">
-                <input type="password" name="password" placeholder="Hasło">
+                <div class="control">
+                    <input class="input is-large" type="text" name="name" placeholder="Nazwa" autofocus="">
+                </div>
             </div>
 
-            <button class="button">Zarejstruj się</button>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" name="password" placeholder="Hasło">
+                </div>
+            </div>
+
+            <button class="button is-block is-info is-large is-fullwidth">Zarejstruj się</button>
         </form>
-</div>
+    </div>
 </div>
 {% endblock %}
