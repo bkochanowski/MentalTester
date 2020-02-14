@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ 
+</head>
+
+<body>
+     <section class="hero is-primary is-medium">
+                        <div>
+                            <a href="{{ url_for('main.index') }}">
+                                Home
+                            </a>
+                            <a href="{{ url_for('main.profile') }}">
+                                Twój profil
+                            </a>
+                            <a href="{{ url_for('authorized.login') }}">
+                                Login
+                            </a>
+                            <a href="{{ url_for('authorized.register') }}">
+                                Rejestracja
+                            </a>
+                            <a href="{{ url_for('authorized.logout') }}">
+                                Wyloguj
+                            </a>
+                        </div>     
+            <div>
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
+</body>
+<footer>
+  <div>
+      <p>B. Kochanowski 2020</p>
+  </div>
+</footer>
+</html>

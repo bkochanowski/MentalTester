@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h3>Rejstracja</h3>
+    <div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/register">
+            <div>
+                <input type="email" name="email" placeholder="Email" autofocus="">
+            </div>
+    </div>
+
+            <div>
+                <input type="text" name="name" placeholder="Nazwa" autofocus="">         
+            </div>
+
+            <div class="field">
+                <input type="password" name="password" placeholder="Hasło">
+            </div>
+
+            <button class="button">Zarejstruj się</button>
+        </form>
+</div>
+</div>
+{% endblock %}
