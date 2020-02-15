@@ -7,29 +7,32 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <div class="notification is-danger">
-            {{ messages[0] }}. Idź do <a href="{{ url_for('authorized.login') }}">Strony Logowania</a>.
+            {{ messages[0] }}
         </div>
         {% endif %}
         {% endwith %}
         <form method="POST" action="/register">
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
+                    <input class="input is-large" type="email" name="email" placeholder="Twój email" autofocus="">
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="text" name="name" placeholder="Nazwa" autofocus="">
+                    <input class="input is-large" type="text" name="name" placeholder="Nazwa użytkownika" autofocus="">
                 </div>
             </div>
-
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Hasło">
+                    <input class="input is-large" type="password" name="password" placeholder="Wpisz hasło">
                 </div>
             </div>
-
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" name="password2" placeholder="Powtórz hasło">
+                </div>
+            </div>
             <button class="button is-block is-info is-large is-fullwidth">Zarejstruj się</button>
         </form>
     </div>

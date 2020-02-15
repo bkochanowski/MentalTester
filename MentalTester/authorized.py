@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import login_user, logout_user, login_required
 from .models import User
 from hashlib import md5
 from . import db
@@ -7,7 +8,7 @@ authorized = Blueprint('authorized', __name__)
 
 
 def hash_it(password):
-    """method for encrypting passwords"""
+    """method for encrypting passwords with salt"""
     return md5(password.encode('utf-8')).hexdigest()
 
 
@@ -19,15 +20,17 @@ def login():
 @authorized.route('/login', methods=['POST'])
 def login_post():
     email = request.form.get('email')
-    password = request.form.get('password')
+    password = hash_it(request.form.get('password'))
     remember = True if request.form.get('remember') else False
-    return redirect(url_for('main.profile'))
 
-    # user = User.query.filter_by(email=email).first()
-    # if not user or not check_password_hash(user.password, password):
-    # flash('Please check your login details and try again.')
-    # return redirect(url_for('authorized.login'))
+    user = User.query.filter_by(email=email).first()
+    if not user or user.password != password:
+        flash('Błędny e-mail lub hasło.')
+        return redirect(url_for('authorized.login'))
+
     # if the above check passes, then we know the user has the right credentials
+    login_user(user, remember=remember)
+    return redirect(url_for('main.profile'))
 
 
 @authorized.route('/register')
@@ -39,15 +42,21 @@ def register():
 def register_post():
     email = request.form.get('email')
     username = request.form.get('name')
-    password = request.form.get('password')
-    hash_password = hash_it(password)
+    password = hash_it(request.form.get('password'))
+    password2 = hash_it(request.form.get('password2'))
 
     user = User.query.filter_by(
         email=email).first()  # if this returns a user then the email already exists in db
 
-    if user:  # if a user in db, user redirected to signup page to try again
+    if user:  # if a user in db, user redirected to register page to try again
+        flash('Użytkownik o podanym adresie email już istnieje')
         return redirect(url_for('authorized.register'))
-    new_user = User(email=email, username=username, password=hash_password)
+
+    if password != password2:
+        flash('Błąd. Podane hasła nie są identyczne. Spróbuj ponownie.')
+        return redirect(url_for('authorized.register'))
+
+    new_user = User(email=email, username=username, password=password)
 
     # add the new user to the database
     db.session.add(new_user)
@@ -57,5 +66,7 @@ def register_post():
 
 
 @authorized.route('/logout')
+@login_required
 def logout():
-    return 'Logout'
+    logout_user()
+    return redirect(url_for('main.index'))
