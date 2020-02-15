@@ -1,15 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required
 from .models import User
-from hashlib import md5
 from . import db
 
 authorized = Blueprint('authorized', __name__)
-
-
-def hash_it(password):
-    """method for encrypting passwords with salt"""
-    return md5(password.encode('utf-8')).hexdigest()
 
 
 @authorized.route('/login')
@@ -20,7 +14,7 @@ def login():
 @authorized.route('/login', methods=['POST'])
 def login_post():
     email = request.form.get('email')
-    password = hash_it(request.form.get('password'))
+    password = User.hash_it(request.form.get('password'))
     remember = True if request.form.get('remember') else False
 
     user = User.query.filter_by(email=email).first()
@@ -42,8 +36,8 @@ def register():
 def register_post():
     email = request.form.get('email')
     username = request.form.get('name')
-    password = hash_it(request.form.get('password'))
-    password2 = hash_it(request.form.get('password2'))
+    password = User.hash_it(request.form.get('password'))
+    password2 = User.hash_it(request.form.get('password2'))
 
     user = User.query.filter_by(
         email=email).first()  # if this returns a user then the email already exists in db
