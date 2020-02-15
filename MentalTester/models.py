@@ -1,7 +1,8 @@
+from flask_login import UserMixin
 from . import db
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50))
     email = db.Column(db.String(100), unique=True)
@@ -15,13 +16,15 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-    #classes below need to be verified
+    # classes below need to be verified!!!!
+
+
 class Test(db.Model):
     __tablename__ = 'tests'
 
     id = db.Column(db.Integer, primary_key=True)
     test_title = db.Column(db.String, nullable=False)
-    questions = db.relationship('Question', backref='survey', lazy='dynamic')
+    questions = db.relationship('Question', backref='test', lazy='dynamic')
 
     def __init__(self, test_title):
         self.test_title = test_title
@@ -38,7 +41,7 @@ class Question(db.Model):
     content = db.Column(db.String, nullable=False)
     kind = db.Column(db.Enum(TEXT, NUMERIC, BOOLEAN,
                              name='question_kind'))
-    survey_id = db.Column(db.Integer, db.ForeignKey('surveys.id'))
+    survey_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
     answers = db.relationship('Answer', backref='question', lazy='dynamic')
 
     def __init__(self, content, kind=TEXT):
