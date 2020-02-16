@@ -22,15 +22,15 @@
                         </a>
                         {% endif %}
                         {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('authorized.login') }}" class="navbar-item">
+                        <a href="{{ url_for('auth.login') }}" class="navbar-item">
                             Login
                         </a>
-                        <a href="{{ url_for('authorized.register') }}" class="navbar-item">
+                        <a href="{{ url_for('auth.register') }}" class="navbar-item">
                             Rejestracja
                         </a>
                         {% endif %}
                         {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('authorized.logout') }}" class="navbar-item">
+                        <a href="{{ url_for('auth.logout') }}" class="navbar-item">
                             Wyloguj
                         </a>
                         {% endif %}
