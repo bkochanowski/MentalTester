@@ -1,7 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-    Witaj, {{ name }}!
-</h1>
+<section>
+    <div class="container">
+        <h2 class="title">Witaj, {{ name }}!</h2>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <h2>Dostępne testy psychologiczne:</h2>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="notification is-danger">
+                    {{ messages[0] }}
+                </div>
+                {% endif %}
+                {% endwith %}
+                {% for test in tests %}
+                <ul>
+                    <li><a href="{{ url_for('main.profile') }}" class="navbar-item">
+                        {{ test.test_title }}
+                    </a>
+                    </li>
+                </ul>
+                {% endfor %}
+            </div>
+            <div class="column">
+            </div>
+            <div class="column">
+            </div>
+        </div>
+    </div>
+</section>
+
+
 {% endblock %}

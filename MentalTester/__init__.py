@@ -15,7 +15,7 @@ def create_app():
     db.init_app(app)
 
     login_manager = LoginManager()
-    login_manager.login_view = 'authorized.login'
+    login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
     from .models import User
@@ -25,11 +25,15 @@ def create_app():
         # since the user_id is just the primary key of our user table, use it in the query for the user
         return User.query.get(int(user_id))
 
-    # blueprint for restricted routes
-    from .authorized import authorized as auth_blueprint
+    """blueprint for user authorization routes"""
+    from .authorize import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
-    # blueprint for open routes
+    """Blueprint for filling psychological tests"""
+    from .test_routes import survey as test_blueprint
+    app.register_blueprint(test_blueprint)
+
+    """blueprint for open routes"""
     from .main_routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
