@@ -5,12 +5,16 @@ from .models import Test
 survey = Blueprint('survey', __name__)
 
 
-@survey.route('/test')
+@survey.route('/survey/<int:test_id>')
 @login_required
-def get_test_details():
-    show_test = Test.query.filter_by(id=Test.id).first()
-    #
-    return render_template("test_details.html", test=show_test)
+def get_test_details(test_id):
+    show_details = Test.query.filter_by(id=test_id).first()
+    # tests = []
+    # for test in show_details:
+    #     test.append(dict(test_id=))
+    # survey_title = survey.test_title
+    # survey_description = survey.test_instructions
+    return render_template("test_details.html", test=show_details)
 
 
 #
