@@ -15,7 +15,7 @@ def index():
 def profile():
     all_tests = Test.query.all()
     if all_tests is []:
-        flash("Brak testów! Weź się do roboty!")
+        flash("Brak testów w bazie! ")
         return render_template('profile.html', name=current_user.username)
 
     return render_template('profile.html', tests=all_tests, name=current_user.username)

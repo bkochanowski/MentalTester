@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, flash
 from flask_login import login_required
-from .models import Test
+from .models import Test, Question
 
 survey = Blueprint('survey', __name__)
 
@@ -9,12 +9,10 @@ survey = Blueprint('survey', __name__)
 @login_required
 def get_test_details(test_id):
     show_details = Test.query.filter_by(id=test_id).first()
-    # tests = []
-    # for test in show_details:
-    #     test.append(dict(test_id=))
-    # survey_title = survey.test_title
-    # survey_description = survey.test_instructions
-    return render_template("test_details.html", test=show_details)
+    all_questions = Question.query.filter_by(test_id=test_id).all()
+    if not all_questions:
+        flash('Jeszcze nie ma pytań do tego testu.')
+    return render_template("test_details.html", test=show_details, questions=all_questions)
 
 
 #

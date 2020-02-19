@@ -1,9 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1> <strong>Nazwa testu:</strong> {{ test.test_title }} </h1>
-<h2> <strong>Opis testu:</strong> {{ test.test_instructions }}</h2>
-
-
-
+<h1><strong>Nazwa testu:</strong> {{ test.test_title }} </h1>
+<h2><strong>Opis testu:</strong> {{ test.test_instructions }}</h2>
+<div class="box">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <table>
+        {% for question in questions %}
+        <tr>
+            <th>Pytanie</th>
+            <th> odpowiedź</th>
+        </tr>
+        <tr>
+            <td>{{ question.content }}</td>
+            <td> {{ question.kind }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
