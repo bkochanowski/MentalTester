@@ -25,16 +25,19 @@ def create_app():
         # since the user_id is just the primary key of our user table, use it in the query for the user
         return User.query.get(int(user_id))
 
-    """blueprint for user authorization routes"""
-    from .authorize import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint)
+    with app.app_context():
+        """blueprint for user authorization routes"""
+        from .authorize import auth as auth_blueprint
+        app.register_blueprint(auth_blueprint)
 
-    """Blueprint for filling psychological tests"""
-    from .test_routes import survey as test_blueprint
-    app.register_blueprint(test_blueprint)
+        """Blueprint for filling psychological tests"""
+        from .test_routes import survey as test_blueprint
+        app.register_blueprint(test_blueprint)
 
-    """blueprint for open routes"""
-    from .main_routes import main as main_blueprint
-    app.register_blueprint(main_blueprint)
+        """blueprint for open routes"""
+        from .main_routes import main as main_blueprint
+        app.register_blueprint(main_blueprint)
+
+        db.create_all()
 
     return app

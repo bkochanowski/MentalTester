@@ -19,7 +19,12 @@
         </tr>
         <tr>
             <td>{{ question.content }}</td>
-            <td> {{ question.kind }}</td>
+            <td>
+                <form method = 'POST'>
+                    {{ csrf_token }}
+                    {{ form.options }}
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>
