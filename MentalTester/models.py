@@ -39,7 +39,8 @@ class TestFactors(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(200), nullable=False)
-    test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
+    test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
+    question_factor = db.relationship('Question', backref='questions.has_factor', lazy='dynamic')
 
     def __init__(self, name):
         self.name = name
@@ -52,6 +53,7 @@ class Question(db.Model):
     number = db.Column(db.Integer, nullable=False)
     content = db.Column(db.String(200), nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
+    has_factor = db.Column(db.Integer, db.ForeignKey('factors.id'), nullable=False)
     answers = db.relationship('Answer', backref='question', lazy='dynamic')
 
     def __init__(self, content):
@@ -66,36 +68,41 @@ class AnswerChoices(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     option = db.Column(db.String(50), nullable=False)
-    extra = db.Column(db.String(50), nullable=True)
+    value = db.Column(db.Integer, nullable=True)
     test = db.Column(db.Integer, db.ForeignKey('tests.id'))
 
-    def __init__(self, option, extra):
+    def __init__(self, option, value):
         self.option = option
-        self.extra = extra
+        self.value = value
 
-    def __repr__(self, option, extra):
+    def __repr__(self, option, value):
         self.option = option
-        self.extra = extra
-
+        self.value = value
 
     # class below to be changed ASAP!!!!
+
+
 class Answer(db.Model):
     __tablename__ = 'answers'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    content = db.Column(db.String(50), nullable=False)
-    session_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    given_value = db.Column(db.Integer, nullable=True)
+    session_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
 
     @classmethod
-    def update_content(cls, session_id, question_id, content):
+    def update_content(cls, given_value, session_id, question_id):
         existing_answer = cls.query.filter(Answer.session_id == session_id and
                                            Answer.question_id == question_id).first()
-        existing_answer.content = content
+        existing_answer.given_value = given_value
         db.session.add(existing_answer)
         db.session.commit()
 
-    def __init__(self, content, question, session_id):
-        self.content = content
-        self.question = question
+    def __init__(self, given_value, session_id, question_id):
+        self.given_value = given_value
+        self.question_id = question_id
         self.session_id = session_id
+
+    def __repr__(self, given_value, session_id, question_id):
+        self.given_value = given_value
+        self.question_id = question_id

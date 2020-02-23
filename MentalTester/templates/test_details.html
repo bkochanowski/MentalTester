@@ -11,22 +11,15 @@
     </div>
     {% endif %}
     {% endwith %}
-    <table>
-        {% for question in questions %}
-        <tr>
-            <th>Pytanie</th>
-            <th> odpowiedź</th>
-        </tr>
-        <tr>
-            <td>{{ question.content }}</td>
-            <td>
-                <form method = 'POST'>
-                    {{ csrf_token }}
-                    {{ form.options }}
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div>
+        <form action="" method="POST">
+            {% for field in form %}
+            {% if field.name.startswith("q_") %}
+            <div>{{ field.label}} {{ field() }}</div>
+            {% endif %}
+            {% endfor %}
+            <input type="submit">
+        </form>
+    </div>
 </div>
 {% endblock %}
