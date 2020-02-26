@@ -23,27 +23,26 @@ class Test(db.Model):
     test_title = db.Column(db.String(60), nullable=False)
     test_instructions = db.Column(db.String(200), nullable=False)
     questions = db.relationship('Question', backref='test', lazy='dynamic')
-    factors = db.relationship('TestFactors', backref='test_factor', lazy='dynamic')
+    factors = db.relationship('TestFactor', backref='test_factor', lazy='dynamic')
 
     def __init__(self, test_title, test_instructions):
         self.test_title = test_title
         self.test_instructions = test_instructions
 
-    @property
-    def has_questions(self):
-        return self.questions.count() > 0
 
-
-class TestFactors(db.Model):
+class TestFactor(db.Model):
     __tablename__ = 'factors'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
     question_factor = db.relationship('Question', backref='questions.has_factor', lazy='dynamic')
 
-    def __init__(self, name):
+    def __init__(self, name, description, test_id):
         self.name = name
+        self.description = description
+        self.test_id = test_id
 
 
 class Question(db.Model):
@@ -52,57 +51,54 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     number = db.Column(db.Integer, nullable=False)
     content = db.Column(db.String(200), nullable=False)
-    test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
+    test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
     has_factor = db.Column(db.Integer, db.ForeignKey('factors.id'), nullable=False)
-    answers = db.relationship('Answer', backref='question', lazy='dynamic')
 
-    def __init__(self, content):
+    def __init__(self, number, content, test_id, has_factor):
+        self.number = number
         self.content = content
+        self.test_id = test_id
+        self.has_factor = has_factor
 
-    def next(self):
-        return self.test.questions.filter(Question.id > self.id).order_by('id').first()
 
-
-class AnswerChoices(db.Model):
+class AnswerChoice(db.Model):
     __tablename__ = 'choices'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     option = db.Column(db.String(50), nullable=False)
-    value = db.Column(db.Integer, nullable=True)
-    test = db.Column(db.Integer, db.ForeignKey('tests.id'))
+    value = db.Column(db.Integer, nullable=False)
+    test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
 
-    def __init__(self, option, value):
+    def __init__(self, option, value, test_id):
         self.option = option
         self.value = value
+        self.test_id = test_id
 
     def __repr__(self, option, value):
         self.option = option
         self.value = value
 
-    # class below to be changed ASAP!!!!
+    # classes below need to be verified!
 
 
 class Answer(db.Model):
     __tablename__ = 'answers'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    given_value = db.Column(db.Integer, nullable=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
+    session_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
+    factor_results = db.relationship('Result', backref='results.answer_id', lazy='dynamic')
 
-    @classmethod
-    def update_content(cls, given_value, session_id, question_id):
-        existing_answer = cls.query.filter(Answer.session_id == session_id and
-                                           Answer.question_id == question_id).first()
-        existing_answer.given_value = given_value
-        db.session.add(existing_answer)
-        db.session.commit()
-
-    def __init__(self, given_value, session_id, question_id):
-        self.given_value = given_value
-        self.question_id = question_id
+    def __init__(self, session_id, test_id):
         self.session_id = session_id
+        self.test_id = test_id
 
-    def __repr__(self, given_value, session_id, question_id):
-        self.given_value = given_value
-        self.question_id = question_id
+
+class Result(db.Model):
+    __tablename__ = 'results'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    answer_id = db.Column(db.Integer, db.ForeignKey('answers.id'), nullable=False)
+    factor_id = db.Column(db.Integer, nullable=False)
+    user_score = db.Column(db.Integer, nullable=False)
+    max_factor_value = db.Column(db.Integer, nullable=False)

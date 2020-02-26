@@ -14,8 +14,8 @@ def index():
 @login_required
 def profile():
     all_tests = Test.query.all()
-    if all_tests is []:
-        flash("Brak testów w bazie! ")
+    if not all_tests:
+        flash("Brak testów w bazie!")
         return render_template('profile.html', name=current_user.username)
 
     return render_template('profile.html', tests=all_tests, name=current_user.username)

@@ -8,5 +8,6 @@ def make_form(questions, answers):
 
     options = answers
     for question in questions:
-        setattr(_Form, f"q_{question.id}", SelectField(f'{question.number}, {question.content}:', choices=options)),
+        id_plus_factor = f'{question.id}_{question.has_factor}'
+        setattr(_Form, f"q_{id_plus_factor}", SelectField(f'{question.number}, {question.content}:', choices=options))
     return _Form()
