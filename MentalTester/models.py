@@ -9,6 +9,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(200))  # string must be long, because it will be hashed
+    is_admin = db.Column(db.Integer, default=0)
 
     def __init__(self, email, username, password):
         self.username = username

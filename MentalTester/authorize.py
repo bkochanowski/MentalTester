@@ -1,8 +1,26 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
+from flask_admin import AdminIndexView, expose
+from flask_admin.contrib.sqla import ModelView
 from .models import User
 from . import db
 from hashlib import md5
+
+
+class MyModelView(ModelView):
+    # Lets admin only to access Admin views
+    def is_accessible(self):
+        if not current_user.is_authenticated: return False
+        return current_user.is_admin == 1
+
+
+class MyAdminIndexView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        return super(MyAdminIndexView, self).index()
+
 
 auth = Blueprint('auth', __name__)
 

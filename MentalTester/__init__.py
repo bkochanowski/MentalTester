@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_admin import Admin
 from .config import DevelopmentConfig
 from flask_migrate import Migrate
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -21,12 +23,16 @@ def create_app():
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    from .models import User
+    from .models import User, Test
+    from .authorize import MyModelView, MyAdminIndexView
 
     @login_manager.user_loader
     def load_user(user_id):
-        # since the user_id is just the primary key of our user table, use it in the query for the user
         return User.query.get(int(user_id))
+
+    admin = Admin(app, index_view=MyAdminIndexView())
+    admin.add_view(MyModelView(Test, db.session))
+    admin.add_view(MyModelView(User, db.session))
 
     with app.app_context():
         """blueprint for user authorization routes"""
@@ -44,3 +50,4 @@ def create_app():
         db.create_all()
 
     return app
+

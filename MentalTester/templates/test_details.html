@@ -12,7 +12,7 @@
     {% endif %}
     {% endwith %}
     <div>
-        <form action="" method="POST">
+        <form action="" method="POSt">
             {% for field in form %}
             {% if field.name.startswith("q_") %}
             <div>{{ field.label}} {{ field() }}</div>
