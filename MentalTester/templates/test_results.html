@@ -1,11 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-    Wyniki:
-</h1>
-{{ test.test_title }}
-<div>
+<h1 class="title">Wyniki:</h1>
+<h2> nazwa testu: --{{ test.test_title }}--</h2>
 
-</div>
+
+<section class="section">
+    <div class="container">
+        <div class="tile is-ancestor">
+            <div class="tile is-4 is-vertical is-parent">
+
+                <div class="tile is-child box">
+                    <p class="title has-text-grey is-size-4"><strong>Poszczególne wyniki w skalach:</strong></p>
+                    <ul>
+                        {% for result in results %}
+                        <li>Twój wynik w skali {{ result.factor_id }} to: {{ result.user_score }} na {{
+                            result.max_factor_value }}
+                            możliwych punktów
+                        </li>
+                        <li> Procentowy wynik: {{result.percent_score}}%</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="tile box has-background-warning">
+                <div class="tile is-child">
+                    <p class="title has-text-light is-size-3">Opis skal</p>
+                    <ul>
+                        {% for factor in factors %}
+                        <li><strong> Nazwa skali testowej:{{ factor.name }}</strong></li>
+                        <li>opis skali: {{ factor.description }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
 {% endblock %}

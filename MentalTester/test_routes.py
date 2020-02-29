@@ -1,7 +1,7 @@
 from collections import defaultdict
 from flask import Blueprint, render_template, flash, request, url_for, redirect
 from flask_login import login_required, current_user
-from .models import Test, Question, AnswerChoice, Answer, Result, db
+from .models import Test, Question, AnswerChoice, Answer, TestFactor, Result, db
 from .forms import make_form
 from sqlalchemy import desc
 
@@ -67,4 +67,9 @@ def get_test_details(test_id):
 @login_required
 def results(test_id):
     show_details = Test.query.filter_by(id=test_id).first()
-    return render_template('test_results.html', test=show_details)
+    show_factors = TestFactor.query.filter_by(test_id=test_id).order_by(TestFactor.id).all()
+    answer_row = Answer.query.filter_by(session_id=current_user.id, test_id=test_id).first()
+    answer_id = answer_row.id
+    factor_results = Result.query.filter_by(answer_id=answer_id).order_by(Result.factor_id).all()
+
+    return render_template('test_results.html', test=show_details, results=factor_results, factors=show_factors)
