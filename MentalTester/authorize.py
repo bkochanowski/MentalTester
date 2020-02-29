@@ -18,7 +18,7 @@ class MyAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
         if not current_user.is_authenticated:
-            return redirect(url_for('login'))
+            return redirect(url_for('auth.login'))
         return super(MyAdminIndexView, self).index()
 
 
@@ -37,11 +37,11 @@ def login():
 
 @auth.route('/login', methods=['POST'])
 def login_post():
-    email = request.form.get('email')
+    email_username = request.form.get('email_or_user')
     password = hash_it(request.form.get('password'))
     remember = True if request.form.get('remember') else False
 
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email_username).first() or User.query.filter_by(username=email_username).first()
     if not user or user.password != password:
         flash('Błędny e-mail lub hasło.')
         return redirect(url_for('auth.login'))

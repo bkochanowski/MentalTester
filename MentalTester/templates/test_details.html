@@ -1,25 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1><strong>Nazwa testu:</strong> {{ test.test_title }} </h1>
-<h2><strong>Opis testu:</strong> {{ test.test_instructions }}</h2>
-<div class="box">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="notification is-danger">
-        {{ messages[0] }}
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <h1><strong>Nazwa testu:</strong> {{ test.test_title }} </h1>
+                <h2><strong>Opis testu:</strong> {{ test.test_instructions }}</h2>
+                {{max_factor_sum}}
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="notification is-danger">
+                    {{ messages[0] }}
+                </div>
+                {% endif %}
+                {% endwith %}
+                <div>
+                    <table class="table is-striped is-hoverable">
+
+                        <form action="" method="POST">
+
+                            {% for field in form %}
+                            {% if field.name.startswith("q_") %}
+                            <tr is-selected is-info>
+                                {{ form.csrf_token }}
+                                <td>{{ field.label}}</td>
+                                <td>{{ field() }}</td>
+                                {% endif %}
+                                {% endfor %}
+                            </tr>
+                            <td><button type=submit class="button is-warning is-hovered">Prześlij odpowiedzi</button></td>
+                        </form>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endif %}
-    {% endwith %}
-    <div>
-        <form action="" method="POSt">
-            {% for field in form %}
-            {% if field.name.startswith("q_") %}
-            <div>{{ field.label}} {{ field() }}</div>
-            {% endif %}
-            {% endfor %}
-            <input type="submit">
-        </form>
-    </div>
-</div>
+</section>
+
+
 {% endblock %}

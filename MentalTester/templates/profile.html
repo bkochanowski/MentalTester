@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
 <h1 class="title">Witaj, {{ name }}!</h1>
+
 <section class="hero is-large">
     <h1><strong>Dostępne testy psychologiczne:</strong></h1>
     <div>
@@ -12,13 +15,15 @@
         </div>
         {% endif %}
         {% endwith %}
+        <div class="container">
             <ul>
                 {% for test in tests %}
-                <li><a href="/survey/{{test.id}}" class="navbar-item">
+                <li><a href="/test/{{test.id}}" class="navbar-item">
                     {{ test.test_title }}</a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
+    </div>
 </section>
 {% endblock %}

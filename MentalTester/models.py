@@ -11,10 +11,11 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(200))  # string must be long, because it will be hashed
     is_admin = db.Column(db.Integer, default=0)
 
-    def __init__(self, email, username, password):
+    def __init__(self, email, username, password, is_admin):
         self.username = username
         self.email = email
         self.password = password
+        self.is_admin = is_admin
 
 
 class Test(db.Model):
@@ -30,6 +31,9 @@ class Test(db.Model):
         self.test_title = test_title
         self.test_instructions = test_instructions
 
+    def __repr__(self):
+        return f'przynależy do: --{self.test_title}--'
+
 
 class TestFactor(db.Model):
     __tablename__ = 'factors'
@@ -38,7 +42,6 @@ class TestFactor(db.Model):
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(500), nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
-    question_factor = db.relationship('Question', backref='questions.has_factor', lazy='dynamic')
 
     def __init__(self, name, description, test_id):
         self.name = name
@@ -53,7 +56,7 @@ class Question(db.Model):
     number = db.Column(db.Integer, nullable=False)
     content = db.Column(db.String(200), nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
-    has_factor = db.Column(db.Integer, db.ForeignKey('factors.id'), nullable=False)
+    has_factor = db.Column(db.Integer, db.ForeignKey('factors.name'), nullable=False)
 
     def __init__(self, number, content, test_id, has_factor):
         self.number = number
@@ -103,3 +106,4 @@ class Result(db.Model):
     factor_id = db.Column(db.Integer, nullable=False)
     user_score = db.Column(db.Integer, nullable=False)
     max_factor_value = db.Column(db.Integer, nullable=False)
+    percent_score = db.Column(db.Float, nullable=False)
