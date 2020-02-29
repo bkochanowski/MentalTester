@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_admin import AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from .forms import NewToken
 from .models import User
 from . import db
 from hashlib import md5
@@ -69,6 +68,12 @@ def register_post():
 
     if user:  # if a user in db, user redirected to register page to try again
         flash('Użytkownik o podanym adresie email już istnieje')
+        return redirect(url_for('auth.register'))
+
+    user = User.query.filter_by(
+        username=username).first()
+    if user:  # if a user in db, user redirected to register page to try again
+        flash('Użytkownik o podanej nazwie już istnieje')
         return redirect(url_for('auth.register'))
 
     if password != password2:

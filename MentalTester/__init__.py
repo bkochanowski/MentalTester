@@ -26,7 +26,7 @@ def create_app():
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    from .models import User, Test, TestFactor, AnswerChoice, Question, Answer
+    from .models import User, Test, TestFactor, AnswerChoice, Question, Answer, Result
     from .authorize import MyModelView, MyAdminIndexView
 
     @login_manager.user_loader
@@ -40,6 +40,7 @@ def create_app():
     admin.add_view(MyModelView(AnswerChoice, db.session))
     admin.add_view(MyModelView(Question, db.session))
     admin.add_view(MyModelView(Answer, db.session))
+    admin.add_view(MyModelView(Result, db.session))
 
     with app.app_context():
         """blueprint for user authorization routes"""
