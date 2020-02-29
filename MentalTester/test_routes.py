@@ -74,7 +74,8 @@ def results(test_id):
     show_details = Test.query.filter_by(id=test_id).first()
     show_factors = TestFactor.query.filter_by(test_id=test_id).order_by(TestFactor.id).all()
     answer_row = Answer.query.filter_by(session_id=current_user.id, test_id=test_id).first()
-    answer_id = answer_row.id
-    factor_results = Result.query.filter_by(answer_id=answer_id,).order_by(Result.factor_id).all()
+    variable = answer_row.id
+    how_many_factors = TestFactor.query.filter_by(test_id=test_id).count()
+    factor_results = Result.query.filter_by(answer_id=answer_row.id, submit_date=answer_row.answer_time).limit(how_many_factors).all()
 
     return render_template('test_results.html', test=show_details, results=factor_results, factors=show_factors)

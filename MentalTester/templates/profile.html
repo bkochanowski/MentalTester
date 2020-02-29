@@ -29,7 +29,7 @@
             <h1><strong>Twoje wyniki:</strong></h1>
             <ul>
                 {% for result in results %}
-                <li><a href="/result/{{result.id}}" class="navbar-item"> Wynik w teście nr: {{ result.test_id }}</a>
+                <li><a href="/results/{{result.id}}" class="navbar-item"> Wynik w teście nr: {{ result.test_id }}</a>
                 </li>
                 {% endfor %}
             </ul>
