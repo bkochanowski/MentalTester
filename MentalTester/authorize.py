@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_admin import AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
+from .forms import NewToken
 from .models import User
 from . import db
 from hashlib import md5
@@ -74,7 +75,7 @@ def register_post():
         flash('Błąd. Podane hasła nie są identyczne. Spróbuj ponownie.')
         return redirect(url_for('auth.register'))
 
-    new_user = User(email=email, username=username, password=password)
+    new_user = User(email=email, username=username, password=password, is_admin=0)
 
     # add the new user to the database
     db.session.add(new_user)

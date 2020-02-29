@@ -9,7 +9,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(200))  # string must be long, because it will be hashed
-    is_admin = db.Column(db.Integer, default=0)
+    is_admin = db.Column(db.Integer, default=int(0))
 
     def __init__(self, email, username, password, is_admin):
         self.username = username
@@ -56,7 +56,7 @@ class Question(db.Model):
     number = db.Column(db.Integer, nullable=False)
     content = db.Column(db.String(200), nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
-    has_factor = db.Column(db.Integer, db.ForeignKey('factors.name'), nullable=False)
+    has_factor = db.Column(db.Integer, db.ForeignKey('factors.id'), nullable=False)
 
     def __init__(self, number, content, test_id, has_factor):
         self.number = number
@@ -91,11 +91,13 @@ class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     session_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), nullable=False)
+    answer_time = db.Column(db.DateTime, nullable=False)
     factor_results = db.relationship('Result', backref='results.answer_id', lazy='dynamic')
 
-    def __init__(self, session_id, test_id):
+    def __init__(self, session_id, test_id, answer_time):
         self.session_id = session_id
         self.test_id = test_id
+        self.answer_time = answer_time
 
 
 class Result(db.Model):
@@ -107,3 +109,5 @@ class Result(db.Model):
     user_score = db.Column(db.Integer, nullable=False)
     max_factor_value = db.Column(db.Integer, nullable=False)
     percent_score = db.Column(db.Float, nullable=False)
+    submit_date = db.Column(db.DateTime, nullable=False)
+    when_submit = db.relationship('Answer', backref='results.answer_time')

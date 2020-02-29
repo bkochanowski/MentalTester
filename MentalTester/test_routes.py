@@ -1,3 +1,4 @@
+import datetime
 from collections import defaultdict
 from flask import Blueprint, render_template, flash, request, url_for, redirect
 from flask_login import login_required, current_user
@@ -6,6 +7,8 @@ from .forms import make_form
 from sqlalchemy import desc
 
 survey = Blueprint('survey', __name__)
+
+actual_day = datetime.datetime.now()
 
 
 def calculate_percentage(percent, whole):
@@ -17,13 +20,14 @@ def calculate_percentage(percent, whole):
 def get_test_details(test_id):
     show_details = Test.query.filter_by(id=test_id).first()
 
-    answer_row = Answer.query.filter_by(session_id=current_user.id, test_id=test_id).first()
-    if not answer_row:
-        flash('Niestety nie możesz brać udziału w tym kwestionariuszu')
-        return render_template('test_details.html', test_id=test_id, test=show_details)
+    new_answer = Answer(session_id=current_user.id, test_id=test_id, answer_time=actual_day)
+    db.session.add(new_answer)
+    db.session.commit()
 
+    get_answer_row = Answer.query.filter_by(session_id=current_user.id, test_id=test_id).order_by(
+        desc(Answer.answer_time)).first()
     max_choice_value = AnswerChoice.query.filter_by(test_id=test_id).order_by(desc(AnswerChoice.value)).first()
-    answer_id = answer_row.id
+    answer_id = get_answer_row.id
     all_test_questions = Question.query.filter_by(test_id=test_id).all()
 
     if not all_test_questions:
@@ -50,7 +54,8 @@ def get_test_details(test_id):
             max_factor_sum = (max_choice_value.value * questions_count)
             user_percent_score = calculate_percentage(value, max_factor_sum)
             new_factor_answer = Result(answer_id=answer_id, factor_id=int(key), user_score=value,
-                                       max_factor_value=max_factor_sum, percent_score=user_percent_score)
+                                       max_factor_value=max_factor_sum, percent_score=user_percent_score,
+                                       submit_date=actual_day)
 
             db.session.add(new_factor_answer)
             db.session.commit()
@@ -70,6 +75,6 @@ def results(test_id):
     show_factors = TestFactor.query.filter_by(test_id=test_id).order_by(TestFactor.id).all()
     answer_row = Answer.query.filter_by(session_id=current_user.id, test_id=test_id).first()
     answer_id = answer_row.id
-    factor_results = Result.query.filter_by(answer_id=answer_id).order_by(Result.factor_id).all()
+    factor_results = Result.query.filter_by(answer_id=answer_id,).order_by(Result.factor_id).all()
 
     return render_template('test_results.html', test=show_details, results=factor_results, factors=show_factors)

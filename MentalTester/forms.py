@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField
+from wtforms import SelectField,IntegerField
 
 
 def make_form(questions, answers):
@@ -11,3 +11,8 @@ def make_form(questions, answers):
         id_plus_factor = f'{question.id}_{question.has_factor}'
         setattr(_Form, f"q_{id_plus_factor}", SelectField(f'{question.number}, {question.content}:', choices=options))
     return _Form()
+
+
+class NewToken(FlaskForm):
+    user_id = IntegerField
+    test_id = IntegerField
